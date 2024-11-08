@@ -39,6 +39,7 @@ type XrayClient struct {
 	ID         string `json:"id"`
 	AlterID    uint   `json:"alter_id,omitempty"`
 	Email      string `json:"email"`
+	Flow       string `json:"flow"`
 	LimitIP    uint   `json:"limitIp"`
 	TotalGB    uint64 `json:"totalGB"`
 	ExpiryTime uint64 `json:"expiryTime"`
