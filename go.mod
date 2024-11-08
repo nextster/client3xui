@@ -1,3 +1,3 @@
-module github.com/digilolnet/client3xui
+module github.com/nextster/client3xui
 
 go 1.22.3

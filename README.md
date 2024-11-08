@@ -1,8 +1,8 @@
 # client3xui
 
-[![Go report](https://goreportcard.com/badge/github.com/digilolnet/client3xui)](https://goreportcard.com/report/github.com/digilolnet/client3xui)
-[![GoDoc](https://godoc.org/github.com/digilolnet/client3xui?status.svg)](https://godoc.org/github.com/digilolnet/client3xui)
-[![License](https://img.shields.io/github/license/digilolnet/client3xui.svg)](https://github.com/digilolnet/client3xui/blob/master/LICENSE.md)
+[![Go report](https://goreportcard.com/badge/github.com/nextster/client3xui)](https://goreportcard.com/report/github.com/nextster/client3xui)
+[![GoDoc](https://godoc.org/github.com/nextster/client3xui?status.svg)](https://godoc.org/github.com/nextster/client3xui)
+[![License](https://img.shields.io/github/license/nextster/client3xui.svg)](https://github.com/nextster/client3xui/blob/master/LICENSE.md)
 
 [3X-UI](https://github.com/MHSanaei/3x-ui) API wrapper in Go.
 
@@ -18,7 +18,7 @@ import (
         "fmt"
         "log"
 
-        "github.com/digilolnet/client3xui"
+        "github.com/nextster/client3xui"
 )
 
 func main() {
