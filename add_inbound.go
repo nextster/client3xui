@@ -24,94 +24,23 @@ import (
 	"net/url"
 )
 
-type InboundSetting struct {
-	Up, Down, Total, Remark, Enable, ExpiryTime, Listen, Port, Protocol string
-}
-
-type ClientOptions struct {
-	ID         string `json:"id"`
-	Flow       string `json:"flow"`
-	Email      string `json:"email"`
-	LimitIp    int    `json:"limitIp"`
-	TotalGb    int    `json:"totalGB"`
-	ExpiryTime int    `json:"expiryTime"`
-	Enable     bool   `json:"enable"`
-	TgId       string `json:"tgId"`
-	SubId      string `json:"subId"`
-	Reset      int    `json:"reset"`
-}
-
-type HeaderSetting struct {
-	Type string `json:"type"`
-}
-
-type TcpSetting struct {
-	AcceptProxyProtocol bool          `json:"acceptProxyProtocol"`
-	Header              HeaderSetting `json:"header"`
-}
-
-type TcpStreamSetting struct {
-	Network       string     `json:"network"`
-	Security      string     `json:"security"`
-	ExternalProxy []string   `json:"externalProxy"`
-	TcpSettings   TcpSetting `json:"tcpSettings"`
-}
-
-type QuicSetting struct {
-	Security string        `json:"security"`
-	Key      string        `json:"key"`
-	Header   HeaderSetting `json:"header"`
-}
-
-type QuicStreamSetting struct {
-	Network       string      `json:"network"`
-	Security      string      `json:"security"`
-	ExternalProxy []string    `json:"externalProxy"`
-	QuicSettings  QuicSetting `json:"quicSettings"`
-}
-
-type SniffingSetting struct {
-	Enabled      bool     `json:"enabled"`
-	DestOverride []string `json:"destOverride"`
-	MetadataOnly bool     `json:"metadataOnly"`
-	RouteOnly    bool     `json:"routeOnly"`
-}
-
-type FallbackOptions struct {
-	Name string `json:"name"`
-	Alpn string `json:"alpn"`
-	Path string `json:"path"`
-	Dest string `json:"dest"`
-	Xver int    `json:"xver"`
-}
-
-type VlessSetting struct {
-	Clients    []ClientOptions   `json:"clients"`
-	Decryption string            `json:"decryption"`
-	Fallbacks  []FallbackOptions `json:"fallbacks"`
-}
-
-type VmessSetting struct {
-	Clients []ClientOptions `json:"clients"`
-}
-
 // Ugly function signature due to a limitation in Go, this function cannot be a method of *Client.
-func AddInbound[T VlessSetting | VmessSetting, K TcpStreamSetting | QuicStreamSetting](ctx context.Context, c *Client, inOpt InboundSetting, pOpt T, strOpt K, sniOpt SniffingSetting) (*ApiResponse, error) {
+func AddInbound[T VlessSettings | VmessSettings, K TcpStreamSettings | QuicStreamSettings](ctx context.Context, c *Client, inOpt InboundBaseSettings, protoOpt T, streamOpt K, sniffOpt SniffingSettings) (*ApiResponse, error) {
 	form := url.Values{}
 
-	protoSettings, err := json.Marshal(pOpt)
+	protoSettings, err := json.Marshal(protoOpt)
 	if err != nil {
 		return nil, err
 	}
 	form.Add("settings", string(protoSettings))
 
-	streamSettings, err := json.Marshal(strOpt)
+	streamSettings, err := json.Marshal(streamOpt)
 	if err != nil {
 		return nil, err
 	}
 	form.Add("streamSettings", string(streamSettings))
 
-	sniffingSettings, err := json.Marshal(sniOpt)
+	sniffingSettings, err := json.Marshal(sniffOpt)
 	if err != nil {
 		return nil, err
 	}
