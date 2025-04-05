@@ -62,15 +62,15 @@ func (i Inbound) GetSniffingSettings() (SniffingSettings, error) {
 }
 
 type ClientStat struct {
-	ID         int    `json:"id"`
-	InboundID  int    `json:"inboundId"`
-	Enable     bool   `json:"enable"`
-	Email      string `json:"email"`
-	Up         int    `json:"up"`
-	Down       int    `json:"down"`
-	ExpiryTime int    `json:"expiryTime"`
-	Total      int    `json:"total"`
-	Reset      int    `json:"reset"`
+	ID         int    `json:"id,omitempty"`
+	InboundID  int    `json:"inboundId,omitempty"`
+	Enable     bool   `json:"enable,omitempty"`
+	Email      string `json:"email,omitempty"`
+	Up         int    `json:"up,omitempty"`
+	Down       int    `json:"down,omitempty"`
+	ExpiryTime int    `json:"expiryTime,omitempty"`
+	Total      int    `json:"total,omitempty"`
+	Reset      int    `json:"reset,omitempty"`
 }
 
 func (c *Client) GetInbounds(ctx context.Context) (*GetInboundsResponse, error) {

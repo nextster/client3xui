@@ -18,8 +18,10 @@ package client3xui
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
 	"strconv"
 )
 
@@ -35,4 +37,36 @@ func (c *Client) DeleteClient(ctx context.Context, inboundId uint, clientUuid st
 		return resp, fmt.Errorf(resp.Msg)
 	}
 	return resp, err
+}
+
+func (c *Client) UpdateClient(ctx context.Context, inboundId uint, client InboundClient) (*ApiResponse, error) {
+	resp := &ApiResponse{}
+	inboundIdStr := strconv.FormatUint(uint64(inboundId), 10)
+
+	// Create client settings using InboundClient struct
+	clientSettings := struct {
+		Clients []InboundClient `json:"clients"`
+	}{
+		Clients: []InboundClient{client},
+	}
+
+	// Convert settings to JSON string
+	settingsBytes, err := json.Marshal(clientSettings)
+	if err != nil {
+		return nil, err
+	}
+
+	// Create form data
+	form := url.Values{}
+	form.Add("id", inboundIdStr)
+	form.Add("settings", string(settingsBytes))
+
+	err = c.DoForm(ctx, http.MethodPost, "/panel/inbound/updateClient/"+client.ID, form, resp)
+	if err != nil {
+		return nil, err
+	}
+	if !resp.Success {
+		return resp, fmt.Errorf(resp.Msg)
+	}
+	return resp, nil
 }
