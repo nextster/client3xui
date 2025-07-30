@@ -90,5 +90,39 @@ func main() {
                 log.Fatal(err)
         }
         fmt.Println(*resp)
+
+        // Get Xray settings
+        xraySettings, err := server.GetXraySettings(context.Background())
+        if err != nil {
+                log.Fatal(err)
+        }
+        fmt.Printf("Xray settings: %+v\n", xraySettings.XraySetting)
+        fmt.Printf("Inbound tags: %v\n", xraySettings.InboundTags)
+
+        // Update Xray settings (example: change log level)
+        if xraySettings.XraySetting != nil {
+                if xraySettings.XraySetting.Log != nil {
+                        xraySettings.XraySetting.Log.LogLevel = "info"
+                }
+                err = server.UpdateXraySettings(context.Background(), xraySettings.XraySetting)
+                if err != nil {
+                        log.Fatal(err)
+                }
+                fmt.Println("Xray settings updated successfully")
+        }
+
+        // Restart Xray service
+        restartResp, err := server.RestartXrayService(context.Background())
+        if err != nil {
+                log.Fatal(err)
+        }
+        fmt.Printf("Restart response: %s\n", restartResp.Msg)
+
+        // Get Xray result
+        resultResp, err := server.GetXrayResult(context.Background())
+        if err != nil {
+                log.Fatal(err)
+        }
+        fmt.Printf("Xray result: %s\n", resultResp.Obj)
 }
 ```
