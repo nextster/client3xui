@@ -124,5 +124,48 @@ func main() {
                 log.Fatal(err)
         }
         fmt.Printf("Xray result: %s\n", resultResp.Obj)
+
+        // Parse VLESS URL
+        vlessURL := "vless://8e72473d-3c52-4153-b5ba-3b06035d0ad1@89.169.53.31:36989?type=tcp&security=reality&pbk=QpIeLuq1OYR1dSWituaXb0c8h4iZtkFPIjKxLKiyC3o&fp=random&sni=rt.com&sid=82c54a0dbca8&spx=/#my-server"
+        outbound, err := client3xui.ParseVlessURL(vlessURL)
+        if err != nil {
+                log.Fatal(err)
+        }
+        fmt.Printf("Parsed outbound tag: %s\n", outbound.Tag)
+
+        // Create outbounds programmatically
+        freedomOutbound := client3xui.CreateFreedomOutbound("direct", "UseIP")
+        blackholeOutbound := client3xui.CreateBlackholeOutbound("blocked")
+        
+        // Create VLESS outbound with Reality
+        realitySettings := &client3xui.XrayRealityOutboundSettings{
+                PublicKey:   "QpIeLuq1OYR1dSWituaXb0c8h4iZtkFPIjKxLKiyC3o",
+                Fingerprint: "random",
+                ServerName:  "rt.com",
+                ShortID:     "82c54a0dbca8",
+                SpiderX:     "/",
+        }
+        vlessOutbound := client3xui.CreateVlessOutbound(
+                "my-vless",
+                "89.169.53.31",
+                36989,
+                "8e72473d-3c52-4153-b5ba-3b06035d0ad1",
+                "xtls-rprx-vision",
+                "reality",
+                realitySettings,
+        )
+
+        // Update Xray settings with new outbounds
+        if xraySettings.XraySetting != nil {
+                xraySettings.XraySetting.Outbounds = []client3xui.XrayOutbound{
+                        *freedomOutbound,
+                        *blackholeOutbound,
+                        *vlessOutbound,
+                }
+                err = server.UpdateXraySettings(context.Background(), xraySettings.XraySetting)
+                if err != nil {
+                        log.Fatal(err)
+                }
+        }
 }
 ```
