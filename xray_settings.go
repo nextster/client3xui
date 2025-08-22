@@ -191,7 +191,13 @@ func (c *Client) GetXraySettings(ctx context.Context) (*XraySettingsWrapper, err
 // UpdateXraySettings updates the Xray settings
 func (c *Client) UpdateXraySettings(ctx context.Context, settings *XraySettings) error {
 	resp := &ApiResponse{}
-	err := c.Do(ctx, http.MethodPost, "/panel/xray/update", settings, resp)
+	form := url.Values{}
+	settingsJSON, err := json.Marshal(settings)
+	if err != nil {
+		return fmt.Errorf("failed to marshal settings: %w", err)
+	}
+	form.Add("xraySetting", string(settingsJSON))
+	err = c.DoForm(ctx, http.MethodPost, "/panel/xray/update", form, resp)
 	if err != nil {
 		return err
 	}
